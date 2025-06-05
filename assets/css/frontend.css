@@ -1,0 +1,787 @@
+/* ======================
+   PART 1: BASE STYLES & CAROUSEL STRUCTURE
+   ====================== */
+
+/* Base Reset & Global Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border: 0;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+button {
+  background-color: var(--color-primary, var(--primary-color, #000));
+  border: 1px solid var(--color-primary, var(--primary-color, #000));
+  color: #fff;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 2px;
+  font-weight: 600;
+  line-height: 1.4;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 30px;
+  height: 42px;
+  font-size: 12px;
+  border-radius: var(--radius-small, 0);
+  transition: all var(--transition-fast, var(--transition, 0.3s));
+  appearance: button;
+  text-decoration: none;
+  text-align: center;
+  position: relative;
+}
+
+button:hover {
+  background-color: var(--color-primary-hover, var(--primary-hover, #333));
+  border-color: var(--color-primary-hover, var(--primary-hover, #333));
+  color: #FFF;
+}
+
+.html-ready button {
+  transition: var(--transition, 0.3s);
+}
+
+svg:not(:root) {
+  overflow: hidden;
+}
+
+
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #ffffff;
+  color: #363537;
+  line-height: 1.5;
+}
+
+/* Main Carousel Wrapper */
+.oc-carousel-wrapper {
+  padding: 24px 0 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  background-image: url('https://images.bewakoof.com/web/bg-offers-zone.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Carousel Title */
+.oc-carousel-title {
+  font-family: 'BaseNeueTrial', sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  letter-spacing: 0.64px;
+  color: #000;
+  text-transform: uppercase;
+  margin-left: 16px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 10;
+}
+
+/* Carousel Container */
+.oc-carousel-container {
+  display: flex;
+  transition: transform 0.5s ease;
+  width: 100%;
+  padding: 20px 0;
+  position: relative;
+  height: 220px;
+  perspective: 1200px;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+}
+
+/* Initial Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* IE11 Fallbacks */
+_:-ms-lang(x), .oc-carousel-container {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* ======================
+   PART 2: SLIDE STYLING & 3D EFFECTS
+   ====================== */
+
+/* Slide Base Styles */
+.oc-slide {
+  flex: 0 0 200px;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  /* 3D Carousel Additions */
+  position: absolute;
+  width: 280px;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 0.4s linear,
+              z-index 0.1s step-end;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  opacity: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Active Slide States */
+.oc-slide.active {
+  transform: translateX(-50%) scale(1.05);
+  opacity: 1;
+  z-index: 2;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+/* Positional States */
+.oc-slide.prev {
+  transform: translateX(-150%) scale(0.75);
+  opacity: 1;
+  z-index: 2;
+}
+
+.oc-slide.next {
+  transform: translateX(50%) scale(0.75);
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Hidden Slides */
+.oc-slide:not(.active):not(.prev):not(.next) {
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Coupon Card */
+.oc-coupon {
+  position: relative;
+
+  overflow: hidden;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+/* Coupon Image Container */
+.oc-coupon-container {
+  height: 100px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Coupon Background Image */
+.oc-coupon-bg {
+  color: transparent;
+  aspect-ratio: 2/5;
+  object-fit: cover;
+  width: 100%;
+  border-radius: 0;
+  position: relative;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+/* Hover Effects */
+.oc-slide.active:hover .oc-coupon-bg {
+  transform: scale(1.05);
+}
+
+/* Loading State */
+.oc-coupon-bg:not(.loaded) {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Coupon Content */
+.oc-coupon-content {
+  width: 100%;
+  position: absolute;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  color: #000;
+}
+
+.oc-coupon-title {
+  font-family: 'BaseNeueTrial', sans-serif;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  text-transform: uppercase;
+  margin: 0;
+  text-align: center;
+}
+
+.oc-coupon-subtitle {
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 15.6px;
+  text-align: center;
+  margin: 0;
+}
+
+/* IE11 Fallbacks */
+_:-ms-lang(x), .oc-slide {
+  display: inline-block;
+  vertical-align: top;
+  position: static;
+  transform: none !important;
+}
+
+/* ======================
+   PART 3: NAVIGATION & INTERACTIVE ELEMENTS  
+   ====================== */
+
+/* Navigation Arrows */
+.oc-carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  border: none;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+}
+
+/* Arrow Positioning */
+.oc-carousel-nav.prev { left: 10px; }
+.oc-carousel-nav.next { right: 10px; }
+
+/* Arrow Hover States */
+.oc-carousel-nav:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Focus States */
+.oc-carousel-nav:focus {
+  outline: 2px solid #207BB4;
+  outline-offset: 2px;
+}
+
+/* Coupon Button */
+.oc-coupon-button {
+  position: relative;
+  overflow: hidden; /* Essential for containing the shine */
+  width: 100%;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 17.07px;
+  height: 40px;
+  padding: 8px;
+  position: relative;
+  color: #000;
+  background-color: #FFD632;
+  border: none;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Shine effect pseudo-element */
+.oc-coupon-button:before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 50px;
+  background-image: linear-gradient(
+    120deg,
+    hsla(0, 0%, 100%, 0) 30%,
+    hsla(0, 0%, 100%, 0.5),
+    hsla(0, 0%, 100%, 0) 70%
+  );
+  top: 0;
+  left: -100px;
+  transform: skewX(-20deg); /* Makes the shine angled */
+}
+
+/* Animation class - add this via JavaScript when needed */
+.oc-coupon-button.shine-effect:before {
+  animation: cta-shine-effect 1.5s linear;
+}
+
+/* Keyframes for shine animation */
+@keyframes cta-shine-effect {
+  0% { left: -100px; }
+  50% { left: 100px; }
+  100% { left: 100%; }
+}
+
+/* ======================
+   PAGINATION DOTS FIX
+   ====================== */
+.oc-carousel-pagination {
+  position: relative;
+  bottom: 0 !important;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  z-index: 10;
+}
+
+.oc-carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  margin: 0 4px;
+  opacity: 0.5;
+  border: none;
+  padding: 0;
+  appearance: none;
+}
+
+.oc-carousel-dot.active {
+  background: #000 !important;
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Remove Swiper.js default styles if they're interfering */
+.swiper-pagination {
+  display: none !important;
+}
+
+.offer-swiper .swiper-pagination {
+  display: none !important;
+}
+
+/* Coupon Cut Effects */
+.oc-coupon-cuts {
+  position: absolute;
+  width: 100%;
+  display: block;
+  z-index: 10;
+}
+
+.oc-coupon-cuts.top { top: 0; }
+.oc-coupon-cuts.bottom { bottom: 0; }
+
+/* Top Cut Design */
+.oc-top-cut {
+  position: relative;
+  z-index: 2;
+}
+
+.oc-top-cut:before,
+.oc-top-cut:after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background-image: linear-gradient(#fff, #e4edff);
+}
+
+.oc-top-cut:before { left: -12px; }
+.oc-top-cut:after { right: -12px; }
+
+/* Center Cut Design */
+.oc-center-cut {
+  position: relative;
+  z-index: 2;
+}
+
+.oc-center-cut:before,
+.oc-center-cut:after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background-image: radial-gradient(circle, #e4edff, #fff, #e4edff);
+}
+
+.oc-center-cut:before { left: -8px; }
+.oc-center-cut:after { right: -8px; }
+
+/* Bottom Cut Design */
+.oc-bottom-cut {
+  position: relative;
+  z-index: 2;
+}
+
+.oc-bottom-cut span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  width: 6px;
+  height: 6px;
+  top: 0;
+  background-image: linear-gradient(#fff, #e4edff);
+  transform: translateY(-50%);
+}
+
+.oc-bottom-cut span:nth-child(1) { left: 25px; }
+.oc-bottom-cut span:nth-child(2) { left: 37px; }
+.oc-bottom-cut span:nth-child(3) { left: 49px; }
+.oc-bottom-cut span:nth-child(4) { left: 61px; }
+.oc-bottom-cut span:nth-child(5) { left: 73px; }
+.oc-bottom-cut span:nth-child(6) { left: 85px; }
+.oc-bottom-cut span:nth-child(7) { left: 97px; }
+.oc-bottom-cut span:nth-child(8) { left: 109px; }
+.oc-bottom-cut span:nth-child(9) { left: 121px; }
+.oc-bottom-cut span:nth-child(10) { left: 133px; }
+.oc-bottom-cut span:nth-child(11) { left: 145px; }
+.oc-bottom-cut span:nth-child(12) { left: 157px; }
+.oc-bottom-cut span:nth-child(13) { left: 169px; }
+
+
+/* ======================
+   PART 4: DECORATIVE ELEMENTS & RESPONSIVE ADJUSTMENTS
+   ====================== */
+
+/* ======================
+   BOTTOM STRIP FINAL FIX
+   ====================== */
+.oc-bottom-strip-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.oc-bottom-strip {
+  width: fit-content;
+  min-width: 190px;
+  height: 24px;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 40px;
+  background-color: #f4f8fb;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 13.41px;
+  position: relative;
+  overflow: hidden;
+  z-index: 20;
+  color: #000; /* Explicit text color */
+}
+
+/* Fix for text visibility */
+.oc-bottom-strip p {
+  margin: 0;
+  font-weight: 600;
+  color: #000 !important; /* Force text color */
+  position: relative;
+  z-index: 30; /* Higher than the pseudo-elements */
+}
+
+/* Animated border fix */
+.oc-bottom-strip:before {
+  content: "";
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  left: -25%;
+  top: -25%;
+  background: conic-gradient(
+    from 90deg at 50% 50%,
+    rgba(143, 189, 218, 0) -126deg,
+    rgba(143, 189, 218, 0) 126deg,
+    #8fbdda 180deg,
+    rgba(143, 189, 218, 0) 234deg,
+    rgba(143, 189, 218, 0) 486deg
+  );
+  animation: border-rotate 7s linear infinite;
+  z-index: 10;
+}
+
+/* Inner background fix */
+.oc-bottom-strip:after {
+  content: "";
+  position: absolute;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  top: 1px;
+  left: 1px;
+  border-radius: 40px;
+  background-color: #f4f8fb; /* Same as parent bg */
+  z-index: 20; /* Between the gradient and text */
+}
+
+/* Stars positioning */
+.oc-stars-left, 
+.oc-stars-right {
+  position: absolute;
+  z-index: 15;
+}
+
+.oc-stars-left {
+  left: 48px;
+}
+
+.oc-stars-right {
+  right: 48px;
+}
+
+@keyframes border-rotate {
+  to { transform: rotate(1turn); }
+}
+
+
+
+/* Decorative Stars */
+.oc-stars-left,
+.oc-stars-right {
+  position: absolute;
+  z-index: 4;
+  animation: float 3s ease-in-out infinite;
+}
+
+.oc-stars-left {
+  left: 48px;
+  animation-delay: 0.5s;
+}
+
+.oc-stars-right {
+  right: 48px;
+  animation-delay: 1s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* ======================
+   RESPONSIVE ADJUSTMENTS
+   ====================== */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+  .oc-carousel-container {
+    height: 200px;
+    perspective: 800px;
+    padding: 20px 40px;
+  }
+
+  .oc-slide {
+    width: 220px;
+  }
+
+  .oc-slide.prev {
+    transform: translateX(-130%) scale(0.85);
+  }
+
+  .oc-slide.next {
+    transform: translateX(30%) scale(0.85);
+  }
+
+  .oc-carousel-nav {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .oc-stars-left { left: 30px; }
+  .oc-stars-right { right: 30px; }
+
+  .oc-bottom-strip {
+    min-width: 180px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  .oc-carousel-wrapper {
+    border-radius: 16px;
+    padding: 16px 0 12px;
+  }
+
+  .oc-carousel-container {
+    height: 180px;
+    padding: 0 30px;
+  }
+
+
+
+  .oc-slide.prev {
+    transform: translateX(-120%) scale(0.8);
+    opacity: 0.8;
+  }
+
+  .oc-slide.next {
+    transform: translateX(20%) scale(0.8);
+    opacity: 0.8;
+  }
+
+  .oc-carousel-title {
+    font-size: 1.1rem;
+    margin-left: 12px;
+    margin-bottom: 12px;
+  }
+
+  .oc-carousel-nav {
+    width: 32px;
+    height: 32px;
+  }
+
+  .oc-bottom-strip {
+    min-width: 160px;
+    font-size: 0.65rem;
+    padding: 4px 12px;
+  }
+
+  .oc-stars-left,
+  .oc-stars-right {
+    display: none;
+  }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+  .oc-slide {
+    width: 160px;
+  }
+
+  .oc-carousel-container {
+    padding: 0 20px;
+  }
+}
+
+/* ======================
+   SPECIAL CASES & FALLBACKS
+   ====================== */
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .oc-carousel-wrapper * {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .oc-slide {
+    transition: none !important;
+  }
+  
+  .oc-bottom-strip:before {
+    animation: none !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .oc-carousel-wrapper {
+    background-image: none !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    max-width: 100% !important;
+  }
+
+  .oc-carousel-nav,
+  .oc-bottom-strip:before,
+  .oc-stars-left,
+  .oc-stars-right {
+    display: none !important;
+  }
+
+  .oc-slide {
+    position: relative !important;
+    transform: none !important;
+    opacity: 1 !important;
+    margin: 10px auto !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .oc-coupon {
+    box-shadow: none !important;
+    border: 1px solid #eee !important;
+    height: auto !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (forced-colors: active) {
+  .oc-coupon {
+    border: 1px solid transparent !important;
+    forced-color-adjust: none;
+  }
+  
+  .oc-carousel-nav {
+    background: ButtonFace !important;
+    color: ButtonText !important;
+  }
+  
+  .oc-carousel-dot.active {
+    background: LinkText !important;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Hide navigation buttons when inactive */
+.oc-carousel-nav {
+  display: none; /* Hide by default */
+}
+
+}
+
+/* Firefox Scrollbar Fix */
+@-moz-document url-prefix() {
+  .oc-carousel-container {
+    scrollbar-width: none;
+  }
+}
+
+/* Safari Transform Fix */
+@media not all and (min-resolution:.001dpcm) { 
+  @supports (-webkit-appearance:none) {
+    .oc-slide {
+      -webkit-backface-visibility: hidden;
+    }
+  }
+}
